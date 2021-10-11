@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:ktor_chat_client_flutter/model/create/create_chat_request.dart';
 import 'package:ktor_chat_client_flutter/model/message.dart';
 import 'package:ktor_chat_client_flutter/model/read/read_chat_response.dart';
 import 'package:http/http.dart' as http;
@@ -9,14 +11,9 @@ class ChatService {
 
   static const _url = 'https://ktor-chat-app.herokuapp.com/chat';
 
-  Future<List<Message>> getMessage() async {
+  Future<List<Message>> getMessages() async {
     try{
       final response = await http.get(Uri.parse(_url));
-
-      // print("GET");
-      // print(response);
-      //
-      // print(json.decode(response.body));
 
       return (json.decode(response.body) as List)
           .map((e) => ReadChatResponse.fromJson(e))
@@ -28,5 +25,21 @@ class ChatService {
       print(e);
       rethrow;
     }
+  }
+
+  Future<bool> createMessage(String userName, String text) async {
+
+    HttpClient httpClient = HttpClient();
+    HttpClientRequest request = await httpClient.postUrl(Uri.parse(_url));
+
+    //ヘッダーをセット
+    request.headers.set('content-type', 'application/json');
+    request.add(utf8.encode(json.encode(CreateChatRequest(userName, text).toJson())));
+
+    //取得
+    HttpClientResponse response = await request.close();
+    httpClient.close();
+    return response.statusCode == 200;
+
   }
 }

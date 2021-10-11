@@ -31,21 +31,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   ChatService chatService = ChatService();
 
   List<Message>? message;
 
-  void _incrementCounter() async{
-    message = await chatService.getMessage();
-    setState((){
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-
-
-    });
+  @override
+  void initState(){
+    super.initState();
+    _getMessages();
   }
 
   @override
@@ -53,22 +47,36 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-
         title: Text(widget.title),
       ),
-      body: ListView.builder(
+      body: ListView.separated(
         itemCount: message != null ? message!.length : 0,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(message != null ? message![index].text : ""),
           );
         },
+        separatorBuilder: (BuildContext context, int index) {
+          return Divider(
+            color: Colors.black,
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _getMessages,
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.refresh),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+
+  void _getMessages() async{
+    message = await chatService.getMessages();
+    setState((){});
+  }
+
+  void _createMessages() async{
+    await chatService.createMessage("userName", "TEST");
   }
 }
