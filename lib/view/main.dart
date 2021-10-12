@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ktor_chat_client_flutter/model/message.dart';
 import 'package:ktor_chat_client_flutter/service/chat_service.dart';
+import 'package:ktor_chat_client_flutter/view/dialog/alert_message.dart';
+import 'package:ktor_chat_client_flutter/view/dialog/create_alert_dialog.dart';
 
 void main() {
   runApp(MyApp());
@@ -48,6 +50,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _getMessages,
+          )
+        ],
       ),
       body: ListView.separated(
         itemCount: message != null ? message!.length : 0,
@@ -63,9 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _getMessages,
+        onPressed: () => _createMessage(context),
         tooltip: 'Increment',
-        child: Icon(Icons.refresh),
+        child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -76,7 +84,12 @@ class _MyHomePageState extends State<MyHomePage> {
     setState((){});
   }
 
-  void _createMessages() async{
-    await chatService.createMessage("userName", "TEST");
+  void _createMessage(BuildContext context) async{
+    AlertMessage alertMessage = await showDialog(
+        context: context,
+        builder: (context) => CreateAlertDialog()
+    );
+    bool result = await chatService.createMessage(alertMessage.userName, alertMessage.text);
+    if(result) _getMessages();
   }
 }
