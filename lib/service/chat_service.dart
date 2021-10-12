@@ -42,4 +42,17 @@ class ChatService {
     return response.statusCode == 200;
 
   }
+
+  Future<bool> deleteMessage(String id) async {
+
+    try{
+      final response = await http.delete(Uri.parse('$_url/$id'));
+
+      return response.statusCode == 200;
+    }
+    on Exception catch(e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

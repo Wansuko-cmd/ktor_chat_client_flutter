@@ -3,6 +3,7 @@ import 'package:ktor_chat_client_flutter/model/message.dart';
 import 'package:ktor_chat_client_flutter/service/chat_service.dart';
 import 'package:ktor_chat_client_flutter/view/dialog/alert_message.dart';
 import 'package:ktor_chat_client_flutter/view/dialog/create_alert_dialog.dart';
+import 'package:ktor_chat_client_flutter/view/message_list_tile.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ChatService chatService = ChatService();
 
-  List<Message>? message;
+  List<Message> message = [];
 
   @override
   void initState(){
@@ -58,10 +59,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: ListView.separated(
-        itemCount: message != null ? message!.length : 0,
+        itemCount: message.length ,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(message != null ? message![index].text : ""),
+          return MessageListTile(
+            userName: message[index].userName,
+            text: message[index].text,
+            onDeletePressed: () => _deleteMessage(message[index].id),
           );
         },
         separatorBuilder: (BuildContext context, int index) {
@@ -90,6 +93,11 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context) => CreateAlertDialog()
     );
     bool result = await chatService.createMessage(alertMessage.userName, alertMessage.text);
+    if(result) _getMessages();
+  }
+
+  void _deleteMessage(String id) async {
+    bool result = await chatService.deleteMessage(id);
     if(result) _getMessages();
   }
 }
