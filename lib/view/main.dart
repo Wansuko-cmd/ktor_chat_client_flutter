@@ -3,6 +3,7 @@ import 'package:ktor_chat_client_flutter/model/message.dart';
 import 'package:ktor_chat_client_flutter/service/chat_service.dart';
 import 'package:ktor_chat_client_flutter/view/dialog/alert_message.dart';
 import 'package:ktor_chat_client_flutter/view/dialog/create_alert_dialog.dart';
+import 'package:ktor_chat_client_flutter/view/dialog/update_alert_dialog.dart';
 import 'package:ktor_chat_client_flutter/view/message_list_tile.dart';
 
 void main() {
@@ -64,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return MessageListTile(
             userName: message[index].userName,
             text: message[index].text,
+            onTap: () => _updateMessage(message[index].id, message[index].userName, message[index].text),
             onDeletePressed: () => _deleteMessage(message[index].id),
           );
         },
@@ -93,6 +95,15 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context) => CreateAlertDialog()
     );
     bool result = await chatService.createMessage(alertMessage.userName, alertMessage.text);
+    if(result) _getMessages();
+  }
+
+  void _updateMessage(String id, String userName, String text) async {
+    AlertMessage alertMessage = await showDialog(
+        context: context,
+        builder: (context) => UpdateAlertDialog(userName: userName, text: text)
+    );
+    bool result = await chatService.updateMessage(id, alertMessage.userName, alertMessage.text);
     if(result) _getMessages();
   }
 

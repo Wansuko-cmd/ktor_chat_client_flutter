@@ -3,12 +3,23 @@ import 'package:ktor_chat_client_flutter/view/dialog/alert_message.dart';
 import 'package:quiver/strings.dart';
 import 'package:ktor_chat_client_flutter/view/dialog/message_alert_dialog.dart';
 
-class CreateAlertDialog extends StatelessWidget {
+class UpdateAlertDialog extends StatelessWidget {
+
+  final String userName;
+  final String text;
+
+  UpdateAlertDialog({
+    required this.userName,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextAlertDialog(
-      title: "作成",
+      title: "更新",
+
+      userName: userName,
+      text: text,
 
       userNameHintText: "ユーザー名",
       textHintText: "テキスト",

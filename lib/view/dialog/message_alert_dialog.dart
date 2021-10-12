@@ -9,8 +9,8 @@ typedef TextAlertDialogCallback = void Function(GlobalKey<FormState> formKey, St
 
 class TextAlertDialog extends StatelessWidget{
 
-  final String? userName;
-  final String? text;
+  final String userName;
+  final String text;
 
   final String? title;
   final String? userNameHintText;
@@ -40,11 +40,12 @@ class TextAlertDialog extends StatelessWidget{
 
   final _formKey = GlobalKey<FormState>();
 
-  final _userNameController = TextEditingController();
-  final _textController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
+
+    final _userNameController = TextEditingController(text: userName);
+    final _textController = TextEditingController(text: text);
+
     return AlertDialog(
       title: title != null ? Text(title!) : null,
       content: Form(

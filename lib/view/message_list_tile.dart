@@ -6,11 +6,13 @@ class MessageListTile extends StatelessWidget{
   final String text;
   final String userName;
 
+  final VoidCallback onTap;
   final VoidCallback onDeletePressed;
 
   MessageListTile({
     required this.text,
     required this.userName,
+    required this.onTap,
     required this.onDeletePressed,
   });
 
@@ -19,6 +21,7 @@ class MessageListTile extends StatelessWidget{
     return ListTile(
       title: Text(text),
       subtitle: Text(userName),
+      onTap: onTap,
       trailing: ElevatedButton(
         child: Icon(Icons.delete),
         onPressed: onDeletePressed,

@@ -6,6 +6,7 @@ import 'package:ktor_chat_client_flutter/model/create/create_chat_request.dart';
 import 'package:ktor_chat_client_flutter/model/message.dart';
 import 'package:ktor_chat_client_flutter/model/read/read_chat_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:ktor_chat_client_flutter/model/update/update_chat_request.dart';
 
 class ChatService {
 
@@ -41,6 +42,21 @@ class ChatService {
     httpClient.close();
     return response.statusCode == 200;
 
+  }
+
+  Future<bool> updateMessage(String id, String userName, String text) async {
+
+    HttpClient httpClient = HttpClient();
+    HttpClientRequest request = await httpClient.putUrl(Uri.parse(_url));
+
+    //ヘッダーをセット
+    request.headers.set('content-type', 'application/json');
+    request.add(utf8.encode(json.encode(UpdateChatRequest(id, userName, text).toJson())));
+
+    //取得
+    HttpClientResponse response = await request.close();
+    httpClient.close();
+    return response.statusCode == 200;
   }
 
   Future<bool> deleteMessage(String id) async {
